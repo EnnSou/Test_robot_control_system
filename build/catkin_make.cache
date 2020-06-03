@@ -1,0 +1,2 @@
+robot_control_system
+-DCATKIN_DEVEL_PREFIX=/home/ogai/robot/devel -DCMAKE_INSTALL_PREFIX=/home/ogai/robot/install -G Unix Makefiles

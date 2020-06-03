@@ -1,0 +1,8 @@
+prefix=/home/ogai/robot/install
+
+Name: robot_control_system
+Description: Description of robot_control_system
+Version: 0.0.0
+Cflags: 
+Libs: -L${prefix}/lib 
+Requires: 

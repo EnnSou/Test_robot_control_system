@@ -1,0 +1,8 @@
+<launch>
+	<rosparam command="load" file="$(find robot_control_system)/launch/robot_parameter.yaml"/>
+	<node name="controller" pkg="robot_control_system" type="controller" output="screen">
+	</node>
+	<node name="odometer" pkg="robot_control_system" type="odom" output="screen">
+	</node>
+
+</launch>

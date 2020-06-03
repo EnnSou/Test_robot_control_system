@@ -1,0 +1,1 @@
+/usr/bin/c++  -fPIC   -shared -Wl,-soname,libastar.so -o /home/ogai/robot/devel/lib/libastar.so CMakeFiles/astar.dir/src/astar.cpp.o 

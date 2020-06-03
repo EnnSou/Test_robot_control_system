@@ -2,14 +2,14 @@
 #include <ros/ros.h>
 #include <nav_msgs/Odometry.h>
 
-double vx=0.1,vth=0.1;
+double vx = 0.0,vth = 0.0;
 ros::Subscriber cmd_sub;
 ros::Publisher odom_pub;
 
 void Callback(const nav_msgs::Odometry::ConstPtr& msg)
 {	
-	vx=msg->twist.twist.linear.x;
-	vth=msg->twist.twist.angular.z;
+	vx = msg->twist.twist.linear.x;
+	vth = msg->twist.twist.angular.z;
 }
 
 
@@ -37,29 +37,29 @@ int main(int argc,char **argv)
 
     while(ros::ok())
     {
-        current_time=ros::Time::now();
+        current_time = ros::Time::now();
 
-        double  dt=(current_time-last_time).toSec();	
-		double	new_th=th+vth*dt;
-		double	new_x=x+vx*cos(new_th)*dt;
-		double	new_y=y+vx*sin(new_th)*dt;
+        double  dt = (current_time-last_time).toSec();	
+		double	new_th = th+vth*dt;
+		double	new_x = x+vx*cos(new_th)*dt;
+		double	new_y = y+vx*sin(new_th)*dt;
 
         nav_msgs::Odometry odom;
-        odom.header.stamp=current_time;
-        odom.header.frame_id="odom";
+        odom.header.stamp = current_time;
+        odom.header.frame_id = "odom";
 
-        odom.pose.pose.position.x=new_x;
-        odom.pose.pose.position.y=new_y;
-        odom.pose.pose.position.z=0.0;
+        odom.pose.pose.position.x = new_x;
+        odom.pose.pose.position.y = new_y;
+        odom.pose.pose.position.z = 0.0;
 
-        odom.twist.twist.linear.x=vx;
-        odom.twist.twist.linear.y=0.0;
-        odom.twist.twist.linear.z=0.0;
-        odom.twist.twist.angular.x=0.0;
-        odom.twist.twist.angular.y=0.0;
-        odom.twist.twist.angular.z=vth;
+        odom.twist.twist.linear.x = vx;
+        odom.twist.twist.linear.y = 0.0;
+        odom.twist.twist.linear.z = 0.0;
+        odom.twist.twist.angular.x = 0.0;
+        odom.twist.twist.angular.y = 0.0;
+        odom.twist.twist.angular.z = vth;
 
-        last_time=current_time;
+        last_time = current_time;
 	
 	    std::cout<<"_____________________________"<<"    X:"<<odom.pose.pose.position.x<<"    Y:"<<odom.pose.pose.position.y<<std::endl;
         odom_pub.publish(odom);

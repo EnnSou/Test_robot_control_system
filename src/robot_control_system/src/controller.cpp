@@ -16,19 +16,19 @@ double point_area=0.5;
 
 void odom_subCallback(const nav_msgs::Odometry::ConstPtr& msg)
 {
-	pose.x=msg->pose.pose.position.x;
-	pose.y=msg->pose.pose.position.y;
-	pose.yaw=msg->pose.pose.orientation.w;
-	pose.linear=msg->twist.twist.linear.x;
-	pose.angular=msg->twist.twist.angular.z;
+	pose.x = msg->pose.pose.position.x;
+	pose.y = msg->pose.pose.position.y;
+	pose.yaw = msg->pose.pose.orientation.w;
+	pose.linear = msg->twist.twist.linear.x;
+	pose.angular = msg->twist.twist.angular.z;
 	
 }
 
 bool isreached(State goal)
 {
 	double dis;
-	dis=sqrt((pose.x-goal.x)*(pose.x-goal.x)+(pose.y-goal.y)*(pose.y-goal.y));
-	if(dis<=point_area)return true;
+	dis = sqrt((pose.x-goal.x) * (pose.x-goal.x) + (pose.y-goal.y) * (pose.y-goal.y));
+	if(dis <= point_area)return true;
 	return false;
 }
 
@@ -37,12 +37,12 @@ State leastpoin(State pose,list<Point *>path)
 	double dis;
 	State target(0.0,0.0,0.0);
 	while(!path.empty()){
-		Point *temp=path.front();
-		dis=sqrt((pose.x-temp->x)*(pose.x-temp->x)+(pose.y-temp->y)*(pose.y-temp->y));
-		if(dis>point_area)
+		Point *temp = path.front();
+		dis = sqrt((pose.x - temp->x) * (pose.x - temp->x) + (pose.y - temp->y) * (pose.y - temp->y));
+		if(dis > point_area)
 		{
-			target.x=temp->x;
-			target.y=temp->y;
+			target.x = temp->x;
+			target.y = temp->y;
 			break;
 		}
 		else{
@@ -56,9 +56,9 @@ int main(int argc,char **argv)
 {
 	ros::init(argc,argv,"controller");
 	ros::NodeHandle n;
-	ros::Subscriber odom_sub=n.subscribe("odom",100,odom_subCallback);
-	ros::Publisher  cmd_vel_pub=n.advertise<nav_msgs::Odometry>("cmd_vel",100);
-	ros::Publisher	final_traj_pub=n.advertise<nav_msgs::Odometry>("trajectory",100);
+	ros::Subscriber odom_sub = n.subscribe("odom",100,odom_subCallback);
+	ros::Publisher  cmd_vel_pub = n.advertise<nav_msgs::Odometry>("cmd_vel",100);
+	ros::Publisher	final_traj_pub = n.advertise<nav_msgs::Odometry>("trajectory",100);
 	ros::Rate loop_rate(10);
 	
 	State start(0.0,0.0,0.0),goal(10.0,10.0,0.0);
@@ -81,20 +81,20 @@ int main(int argc,char **argv)
 	ros::param::get("v_acc",limits[6]);
 	ros::param::get("w_acc",limits[7]);
 
-	startpoint.x=start.x;
-	startpoint.y=start.y;
-	goalpoint.x=goal.x;
-	goalpoint.y=goal.y;
+	startpoint.x = start.x;
+	startpoint.y = start.y;
+	goalpoint.x = goal.x;
+	goalpoint.y = goal.y;
 
 	
 
 	while(ros::ok())
 	{
 		if(isreached(goal)){
-			if(goal.yaw!=pose.yaw)
+			if(goal.yaw != pose.yaw)
 			{
-				cmd.twist.twist.linear.x=0.0;
-				cmd.twist.twist.angular.z=goal.yaw-pose.yaw;
+				cmd.twist.twist.linear.x = 0.0;
+				cmd.twist.twist.angular.z = goal.yaw-pose.yaw;
 			}
 			else
 			{
@@ -103,7 +103,7 @@ int main(int argc,char **argv)
 		}
 		else 
 		{	
-			vector<vector<int>> maze=
+			vector<vector<int>> maze =
 			{
 				{1,1,1,1,1,1,1,1,1,1,1,1},
 				{1,0,0,1,1,0,1,0,0,0,0,1},
@@ -116,15 +116,15 @@ int main(int argc,char **argv)
 			};
 
 			astar.InitAstar(maze);
-			list<Point *> global_path=astar.GetPath(startpoint,goalpoint,false);
-			State target=leastpoin(pose,global_path);
+			list<Point *> global_path = astar.GetPath(startpoint,goalpoint,false);
+			State target = leastpoin(pose,global_path);
  
-			State final_cmd=dwa->FindBestTrajectory(pose,target,limits);
+			State final_cmd = dwa->FindBestTrajectory(pose,target,limits);
 
-			cmd.twist.twist.linear.x=final_cmd.linear;
-			cmd.twist.twist.angular.z=final_cmd.angular;
-			cmd.pose.pose.position.x=final_cmd.x;
-			cmd.pose.pose.position.y=final_cmd.y;
+			cmd.twist.twist.linear.x = final_cmd.linear;
+			cmd.twist.twist.angular.z = final_cmd.angular;
+			cmd.pose.pose.position.x = final_cmd.x;
+			cmd.pose.pose.position.y = final_cmd.y;
 
 
 			std::cout<<"velocity:"<<cmd.twist.twist.linear.x<<"    angular:"<<cmd.twist.twist.angular.z<<endl;
